@@ -18,6 +18,7 @@ function () {
         } else {
             o = this.defParams;
         }
+
         var a = [['']];
         for (var r = f = p = q = 0; p < str.length; p++) {
             switch (c = str.charAt(p)) {

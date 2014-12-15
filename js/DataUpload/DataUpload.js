@@ -3,18 +3,27 @@
         'fx-DataUpload/js/DataUpload/TextFileUpload',
         'text!fx-DataUpload/templates/DataUpload/DataUpload.htm',
         'fx-DataUpload/js/DataUpload/converters/CSV/CSVToStringArray',
-        'fx-DataUpload/js/DataUpload/converters/CSV/CSVToDataset'
+        'fx-DataUpload/js/DataUpload/converters/CSV/CSVToDataset',
+        'fx-DataUpload/js/DataUpload/converters/CSV/CSVParsePreview'
 ],
-    function ($, TextFileUpload, DataUploadHTML, CSVToStringArray, CSVToDataset) {
-
+    function ($, TextFileUpload, DataUploadHTML, CSVToStringArray, CSVToDataset, CSVParsePreview) {
         var widgetName = "DataUpload";
         var evtCSVUploaded = "csvUploaded." + widgetName + ".fenix";
+        var defConfig = {
+            csvOptions: {
+                separator: ',',
+                quote: '"'
+            }
+        };
 
         var DataUpload = function (config) {
-            //this.config = {};
-            //$.extend(true, this.config, defConfig, config);
+            this.config = {};
+            $.extend(true, this.config, defConfig, config);
             this.$container;
+            this.$upload;
             this.txtUpload;
+
+            this.CSVParsePreview = new CSVParsePreview();
         };
 
         //Render - creation
@@ -26,17 +35,23 @@
             this.$upload = this.$container.find('#cntDataUpload');
             this.txtUpload = new TextFileUpload();
             this.txtUpload.render(this.$upload);
+
+            this.CSVParsePreview.render($("#cntDataUploadPreview"));
+
             var me = this;
             this.$upload.on('textFileUploaded.TextFileUpload.fenix', function (evt, csvData) {
-                var toArr = new CSVToStringArray();
-                var arrData = toArr.toArray(csvData);
+
+                me.CSVParsePreview.setCSV_Text(csvData);
+
+                /*var toArr = new CSVToStringArray();
+                var arrData = toArr.toArray(csvData, me.config.csvOptions);
 
                 var csvToDataset = new CSVToDataset();
                 var cols = csvToDataset.parseColumns(arrData);
                 var data = csvToDataset.parseData(arrData);
 
                 var contents = {columns:cols, data:data};
-                me.$container.trigger(evtCSVUploaded, contents);
+                me.$container.trigger(evtCSVUploaded, contents);*/
             });
         }
 

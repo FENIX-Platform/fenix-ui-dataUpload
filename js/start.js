@@ -5,12 +5,13 @@ define([
     'domReady!'
 ], function ($, DataUpload) {
 
-    function DataUpload_starter(containerID, config) {
+    function init(containerID, config) {
         DataUpload = new DataUpload(config);
         DataUpload.render($(containerID), null);
     }
 
+
     return {
-        init: DataUpload_starter
+        init: init
     }
 });

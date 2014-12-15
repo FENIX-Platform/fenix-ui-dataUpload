@@ -1,7 +1,7 @@
 ﻿define([
 'jquery',
  ],
-function ($, fx_column) {
+function ($) {
     function CSVToDataset() {
     };
 
