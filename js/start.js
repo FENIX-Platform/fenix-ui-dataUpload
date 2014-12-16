@@ -6,8 +6,8 @@ define([
 ], function ($, DataUpload) {
 
     function DataUpload_starter(containerID, config) {
-        DataUpload = new DataUpload(config);
-        DataUpload.render($(containerID), null);
+        this.DU = new DataUpload(config);
+        this.DU.render($(containerID), null);
     }
 
     return {
