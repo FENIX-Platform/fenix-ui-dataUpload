@@ -1,9 +1,10 @@
 ﻿define([
 'jquery',
 'fx-DataUpload/js/DataUpload/converters/CSV/CSVToStringArray',
+'fx-DataUpload/js/DataUpload/converters/CSV/CSVParseValidator',
 'text!fx-DataUpload/templates/DataUpload/DataParsePreview.html',
 ],
-function ($, CSVToStringArray, DataParsePreviewHTML) {
+function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
     var keyCodesIgnore = [16];
 
     this.defConfig = {
@@ -13,7 +14,8 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
             //quot: '"',
             decimalSep: ".",
             thousandsSep: "",
-            trim: true
+            trim: true,
+            removeEmptyLines: true
         }
     };
 
@@ -23,13 +25,6 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
         this.$container;
         this.$prevArea;
         this.txt;
-        /*this.CSVParseOptions = {
-            fSep: ',',
-            //quot: '"',
-            decimalSep: ".",
-            thousandsSep: "",
-            trim: true
-        }*/
         this.toArr = new CSVToStringArray();
         this.arrData;
         this.arrDataTypes;
@@ -40,13 +35,9 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
         this.$container = container;
         this.$container.html(DataParsePreviewHTML);
         this.$prevArea = this.$container.find('#divPreviewArea');
-
         this.$txtSeparator = this.$container.find('#txtSeparator');
-        this.$txtQuote = this.$container.find('#txtQuote');
-        this.$txtDecSep = this.$container.find('#txtDecSep');
-        this.$txtThoSep = this.$container.find('#txtThoSep');
-        this.$chkTrim = this.$container.find('#chkTrim');
-
+        //this.$txtQuote = this.$container.find('#txtQuote');
+        //this.$chkTrim = this.$container.find('#chkTrim');
         this.addEvents();
         this.parseOptionsToInterface();
     }
@@ -72,16 +63,17 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
             return;
         var pOptions = {
             fSep: this.config.CSVParseOptions.fSep,
-            //quot: this.CSVParseOptions.quot,
-            //decimalSep: ".",
-            //thousandsSep: "",
-            trim: false
+            trim: this.config.CSVParseOptions.trim
         };
 
         this.arrData = this.toArr.toArray(this.txt, pOptions);
         if (this.arrData && this.arrData.length > 0)
             for (var i = 0; i < this.arrData[0].length; i++)
                 this.arrDataTypes[i] = "text";
+
+        for (i = this.arrData.length - 1; i >= 0; i--)
+            if (this.arrData[i] == "")
+                this.arrData.splice(i, 1);
     }
 
     CSVParsePreview.prototype.createTable = function () {
@@ -95,9 +87,6 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
             csvTbl += createTableHeaderRow(this.arrData[0], true);
             csvTbl += createTHIsNumber(this.arrData[0], this.arrDataTypes);
         }
-        /* if (this.arrData.length > 1)
-             for (var i = 1; i < this.arrData.length; i++)
-                 csvTbl += createTableRow(this.arrData[i], false);*/
         csvTbl += "</table>";
         this.$prevArea.html(csvTbl);
 
@@ -167,79 +156,86 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
         for (var i = 0; i < row.length; i++)
             toRet += '<td>' + parseVal(row[i], options, dataTypes[i]) + '</td>';
         toRet += "</tr>";
-
-        console.log("r " + toRet);
         return toRet;
     }
 
     var parseVal = function (val, options, dataType) {
         var toRet = val;
-        if (options.trim)
-            toRet = toRet.trim();
+        if (!dataType)
+            return toRet;
         if (dataType == 'num') {
             if (options.decimalSep) {
                 var re = new RegExp(fixRegExp(options.decimalSep), 'g');
                 toRet = toRet.replace(re, '.');
-                //toRet = toRet.replace(/,/g, '.');
             }
             if (options.thousandsSep) {
                 var re = new RegExp(fixRegExp(options.thousandsSep), 'g');
                 toRet = toRet.replace(re, '');
             }
         }
-        console.log(toRet);
         return toRet;
     }
 
     fixRegExp = function (str) {
         return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-
     }
 
 
     CSVParsePreview.prototype.parseOptionsToInterface = function () {
         this.$container.find('#txtSeparator').val(this.config.CSVParseOptions.fSep);
-        // this.$container.find('#txtQuote').val(this.CSVParseOptions.quot);
-        this.$container.find('#txtDecSep').val(this.config.CSVParseOptions.decimalSep);
-        this.$container.find('#txtThoSep').val(this.config.CSVParseOptions.thousandsSep);
-        this.$container.find('#chkTrim').prop('checked', this.config.CSVParseOptions.trim);
+
+        switch (this.config.CSVParseOptions.decimalSep) {
+            case ".":
+                this.$container.find('#decDot').prop("checked", true);
+                break;
+            case ",":
+                this.$container.find('#decComma').prop("checked", true);
+                break;
+        }
+        switch (this.config.CSVParseOptions.thousandsSep) {
+
+            case "":
+                this.$container.find('#thoNo').prop("checked", true);
+                break;
+            case ".":
+                this.$container.find('#thoDot').prop("checked", true);
+                break;
+            case ",":
+                this.$container.find('#thoComma').prop("checked", true);
+                break;
+        }
+        //this.$container.find('#chkTrim').prop('checked', this.config.CSVParseOptions.trim);
     }
     CSVParsePreview.prototype.parseOptionsFromInterface = function () {
         var toRet = {}
         toRet.fSep = this.$container.find('#txtSeparator').val();
         //toRet.quot = this.$container.find('#txtQuote').val();
-        toRet.decimalSep = this.$container.find('#txtDecSep').val();
-        toRet.thousandsSep = this.$container.find('#txtThoSep').val();
-        toRet.trim = this.$container.find('#chkTrim').prop('checked');
+        toRet.decimalSep = this.$container.find("input[type='radio'][name='decSep']:checked").val();
+        toRet.thousandsSep = this.$container.find("input[type='radio'][name='thoSep']:checked").val();
+        //toRet.trim = this.$container.find('#chkTrim').prop('checked');
         return toRet;
     }
 
     CSVParsePreview.prototype.addEvents = function () {
         var me = this;
         this.$txtSeparator.keyup(function (e) {
-            if (me.on1CharKeyUp(e, me.$txtSeparator));
-            {
+            if (me.on1CharKeyUp(e, me.$txtSeparator)) {
                 me.config.CSVParseOptions = me.parseOptionsFromInterface();
                 me.parseCSV();
                 me.createTable();
                 me.updateDataPreview();
             }
         });
-        //this.$txtQuote.keyup(function (e) { me.on1CharKeyUp(e, me.$txtQuote); });
-        this.$txtDecSep.keyup(function (e) {
-            me.on1CharKeyUp(e, me.$txtDecSep);
-            me.config.CSVParseOptions = me.parseOptionsFromInterface();
-            me.updateDataPreview();
-        });
-        this.$txtThoSep.keyup(function (e) {
-            me.on1CharKeyUp(e, me.$txtThoSep);
-            me.config.CSVParseOptions = me.parseOptionsFromInterface();
-            me.updateDataPreview();
-        });
-        this.$chkTrim.change(function () {
-            me.config.CSVParseOptions = me.parseOptionsFromInterface();
-            me.updateDataPreview();
-        });
+        this.$container.find('#decDot').change(function () { me.parseAndUpdate(); });
+        this.$container.find('#decComma').change(function () { me.parseAndUpdate(); });
+        this.$container.find('#thoNo').change(function () { me.parseAndUpdate(); });
+        this.$container.find('#thoComma').change(function () { me.parseAndUpdate(); });
+        this.$container.find('#thoDot').change(function () { me.parseAndUpdate(); });
+    }
+
+    CSVParsePreview.prototype.parseAndUpdate = function () {
+        this.config.CSVParseOptions = this.parseOptionsFromInterface();
+        this.updateDataPreview();
     }
 
     CSVParsePreview.prototype.on1CharKeyUp = function (evt, $src) {
@@ -251,21 +247,38 @@ function ($, CSVToStringArray, DataParsePreviewHTML) {
         return true;
     }
 
-    CSVParsePreview.prototype.getParsedCSV = function () {
+    CSVParsePreview.prototype.getData = function () {
         var toRet = [];
         if (!this.arrData)
             return toRet;
         if (this.arrData.length == 0)
             return toRet;
-        this.toRet[0] = this.arrData[0];
         if (this.arrData.length > 1)
-            for (var i = 0; i < this.arrData.length; i++)
-                for (var v = 0; v < this.arrData[i].length; v++)
-                    toRet[i][v] = parseVal(this.arrData[i][v], this.config.CSVParseOptions, this.arrDataTypes[v]);
+            for (var i = 1; i < this.arrData.length; i++)
+                toRet[i - 1] = doDataRow(this.arrData[i], this.config.CSVParseOptions, this.arrDataTypes);
         return toRet;
+    }
+    var doDataRow = function (row, CSVParseOptions, arrDataTypes) {
+        if (!row)
+            return null;
+        var toRet = [];
+        for (var i = 0; i < row.length; i++)
+            toRet[i] = parseVal(row[i], CSVParseOptions, arrDataTypes[i]);
+        return toRet;
+    }
+    CSVParsePreview.prototype.getHeaderRow = function () {
+        if (this.arrData && this.arrData.length > 0)
+            return this.arrData[0];
+        return null;
     }
     CSVParsePreview.prototype.getDataTypes = function () {
         return this.arrDataTypes;
+    }
+
+    //Validation
+    CSVParsePreview.prototype.validate = function () {
+        var val = new CSVParseValidator();
+        return val.validate(this.getData(), this.arrDataTypes);
     }
     return CSVParsePreview;
 });

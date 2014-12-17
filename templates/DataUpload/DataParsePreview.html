@@ -10,16 +10,22 @@
         </tr>-->
         <tr>
             <td>Decimal separator</td>
-            <td><input id="txtDecSep" type="text" maxlength="2" /></td>
+            <td><input type="radio" name="decSep" value="." id="decDot" />Dot
+            <input type="radio" name="decSep" value="," id="decComma" />Comma </td>
         </tr>
         <tr>
+
             <td>Thousands separator</td>
-            <td><input id="txtThoSep" type="text" maxlength="2" /></td>
+            <td>
+                <input id="thoNo" type="radio" name="thoSep" value="" />No separator
+                <input id="thoComma"  type="radio" name="thoSep" value="," />Comma
+                <input id="thoDot" type="radio" name="thoSep" value="." />Dot
+            </td>
         </tr>
-        <tr>
+        <!--<tr>
             <td>Trim</td>
             <td><input id="chkTrim" type="checkbox" /></td>
-        </tr>
+        </tr>-->
     </table>
     <div id="divPreviewArea"></div>
 </div>

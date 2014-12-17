@@ -10,8 +10,13 @@ define([
         DataUpload.render($(containerID), null);
     }
 
+    function getData() { return DataUpload.getData(); }
+
+    function getColumns() { return DataUpload.getColumns(); }
 
     return {
-        init: init
+        init: init,
+        getData: getData,
+        getDSD: getColumns
     }
 });

@@ -2,11 +2,9 @@
         'jquery',
         'fx-DataUpload/js/DataUpload/TextFileUpload',
         'text!fx-DataUpload/templates/DataUpload/DataUpload.htm',
-        'fx-DataUpload/js/DataUpload/converters/CSV/CSVToStringArray',
-        'fx-DataUpload/js/DataUpload/converters/CSV/CSVToDataset',
         'fx-DataUpload/js/DataUpload/converters/CSV/CSVParsePreview'
 ],
-    function ($, TextFileUpload, DataUploadHTML, CSVToStringArray, CSVToDataset, CSVParsePreview) {
+    function ($, TextFileUpload, DataUploadHTML, CSVParsePreview) {
         var widgetName = "DataUpload";
         var evtCSVUploaded = "csvUploaded." + widgetName + ".fenix";
         var defConfig = {
@@ -40,19 +38,19 @@
 
             var me = this;
             this.$upload.on('textFileUploaded.TextFileUpload.fenix', function (evt, csvData) {
-
                 me.CSVParsePreview.setCSV_Text(csvData);
-
-                /*var toArr = new CSVToStringArray();
-                var arrData = toArr.toArray(csvData, me.config.csvOptions);
-
-                var csvToDataset = new CSVToDataset();
-                var cols = csvToDataset.parseColumns(arrData);
-                var data = csvToDataset.parseData(arrData);
-
-                var contents = {columns:cols, data:data};
-                me.$container.trigger(evtCSVUploaded, contents);*/
             });
+        }
+
+        DataUpload.prototype.getData = function ()
+        { return this.CSVParsePreview.getData(); }
+
+        DataUpload.prototype.getColumns = function () {
+            var header = this.CSVParsePreview.getHeaderRow();
+            var toRet = [];
+            for (var i = 0; i < header.length; i++)
+                toRet.push({ id: header[i] });
+            return toRet;
         }
 
         return DataUpload;

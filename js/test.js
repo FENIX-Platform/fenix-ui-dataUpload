@@ -19,14 +19,14 @@
                 var callB = null;
                 DataUpload.init("#divDataUpload", config, callB);
 
-                $("#divDataUpload").on("csvUploaded.DataUpload.fenix", function (evt, data) { console.log(data); });
+                //$("#divDataUpload").on("csvUploaded.DataUpload.fenix", function (evt, data) { console.log(data); });
 
 
                 $('#btnGetData').click(function () {
-                    DataUpload.getData();
+                    console.log(DataUpload.getData());
                 });
                 $('#btnGetDataTypes').click(function () {
-                    DataUpload.getDataTypes();
+                    console.log(DataUpload.getDSD());
                 });
             });
         });
