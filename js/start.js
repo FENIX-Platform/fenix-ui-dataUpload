@@ -6,13 +6,13 @@ define([
 ], function ($, DataUpload) {
 
     function init(containerID, config) {
-        DataUpload = new DataUpload(config);
-        DataUpload.render($(containerID), null);
+        this.DUpload = new DataUpload(config);
+        this.DUpload.render($(containerID), null);
     }
 
-    function getData() { return DataUpload.getData(); }
+    function getData() { return this.DUpload.getData(); }
 
-    function getColumns() { return DataUpload.getColumns(); }
+    function getColumns() { return this.DUpload.getColumns(); }
 
     return {
         init: init,
