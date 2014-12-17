@@ -27,6 +27,7 @@
                 });
                 $('#btnGetDataTypes').click(function () {
                     console.log(DataUpload.getDSD());
+                    console.log(DataUpload.validate());
                 });
             });
         });

@@ -47,10 +47,17 @@
 
         DataUpload.prototype.getColumns = function () {
             var header = this.CSVParsePreview.getHeaderRow();
+            if (!header)
+                return null;
             var toRet = [];
             for (var i = 0; i < header.length; i++)
                 toRet.push({ id: header[i] });
             return toRet;
+        }
+
+        DataUpload.prototype.validate = function ()
+        {
+            return this.CSVParsePreview.validate();
         }
 
         return DataUpload;

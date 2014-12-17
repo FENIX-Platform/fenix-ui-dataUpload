@@ -67,9 +67,12 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
         };
 
         this.arrData = this.toArr.toArray(this.txt, pOptions);
+
         if (this.arrData && this.arrData.length > 0)
-            for (var i = 0; i < this.arrData[0].length; i++)
-                this.arrDataTypes[i] = "text";
+            for (var i = 0; i < this.arrData[0].length; i++) {
+                this.arrData[0][i] = this.arrData[0][i].replace(/\s/g, '');//Remove spaces from the columnIDs
+                this.arrDataTypes[i] = "text";//Init the datatypes array
+            }
 
         for (i = this.arrData.length - 1; i >= 0; i--)
             if (this.arrData[i] == "")
@@ -278,7 +281,7 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
     //Validation
     CSVParsePreview.prototype.validate = function () {
         var val = new CSVParseValidator();
-        return val.validate(this.getData(), this.arrDataTypes);
+        return val.validate(this.getHeaderRow(), this.getData(), this.arrDataTypes);
     }
     return CSVParsePreview;
 });
