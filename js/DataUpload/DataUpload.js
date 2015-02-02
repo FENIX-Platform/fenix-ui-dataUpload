@@ -49,9 +49,11 @@
             var header = this.CSVParsePreview.getHeaderRow();
             if (!header)
                 return null;
+            var dTypes = this.CSVParsePreview.getDataTypes();//Cannot determine the datatype, number could be a year or a value
             var toRet = [];
-            for (var i = 0; i < header.length; i++)
+            for (var i = 0; i < header.length; i++) {
                 toRet.push({ id: header[i] });
+            }
             return toRet;
         }
 
