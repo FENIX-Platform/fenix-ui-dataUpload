@@ -52,7 +52,7 @@
             var dTypes = this.CSVParsePreview.getDataTypes();//Cannot determine the datatype, number could be a year or a value
             var toRet = [];
             for (var i = 0; i < header.length; i++) {
-                toRet.push({ id: header[i] });
+                toRet.push({ id: header[i], title: { EN: header[i] }});
             }
             return toRet;
         }
