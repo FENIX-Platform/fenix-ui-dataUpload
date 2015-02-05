@@ -43,12 +43,18 @@
         }
 
         DataUpload.prototype.getData = function ()
-        { return this.CSVParsePreview.getData(); }
+        {
+            var toRet = this.CSVParsePreview.getData();
+            if (!toRet)
+                return false;
+            return toRet;
+        }
 
         DataUpload.prototype.getColumns = function () {
             var header = this.CSVParsePreview.getHeaderRow();
-            if (!header)
-                return null;
+            if (!header) {
+                return false;
+            }
             var dTypes = this.CSVParsePreview.getDataTypes();//Cannot determine the datatype, number could be a year or a value
             var toRet = [];
             for (var i = 0; i < header.length; i++) {

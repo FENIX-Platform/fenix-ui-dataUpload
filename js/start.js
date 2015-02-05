@@ -18,7 +18,7 @@ define([
     return {
         init: init,
         getData: getData,
-        getDSD: getColumns,
+        getColumns: getColumns,
         validate:validate
     }
 });

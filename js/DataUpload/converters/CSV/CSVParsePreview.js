@@ -36,8 +36,6 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
         this.$container.html(DataParsePreviewHTML);
         this.$prevArea = this.$container.find('#divPreviewArea');
         this.$txtSeparator = this.$container.find('#txtSeparator');
-        //this.$txtQuote = this.$container.find('#txtQuote');
-        //this.$chkTrim = this.$container.find('#chkTrim');
         this.addEvents();
         this.parseOptionsToInterface();
     }
@@ -251,6 +249,8 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
     }
 
     CSVParsePreview.prototype.getData = function () {
+        if (!this.txt)
+            return null;
         var toRet = [];
         if (!this.arrData)
             return toRet;
@@ -270,6 +270,8 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
         return toRet;
     }
     CSVParsePreview.prototype.getHeaderRow = function () {
+        if (!this.txt)
+            return null;
         if (this.arrData && this.arrData.length > 0)
             return this.arrData[0];
         return null;
