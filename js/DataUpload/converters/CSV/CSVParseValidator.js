@@ -29,6 +29,8 @@ function ($) {
                 for (var r = 1; r < data.length; r++)
                     if (!$.isNumeric(data[r][i]))
                         toRet.push({ level: 'e', type: ERR_IS_NOT_A_NUMBER, row: r });
+        if (toRet.length == 0)
+            return null;
         return toRet;
     }
 

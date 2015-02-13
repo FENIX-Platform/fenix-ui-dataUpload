@@ -13,12 +13,14 @@ define([
 
     function getColumns() { return this.DUpload.getColumns(); }
 
-    function validate() { return this.DUpload.validate();}
+    function validate() { return this.DUpload.validate(); }
+    function alertValidation() { return this.DUpload.alertValidation(); }
 
     return {
         init: init,
         getData: getData,
         getColumns: getColumns,
-        validate:validate
+        validate: validate,
+        alertValidation: alertValidation
     }
 });

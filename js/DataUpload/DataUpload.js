@@ -6,7 +6,7 @@
 ],
     function ($, TextFileUpload, DataUploadHTML, CSVParsePreview) {
         var widgetName = "DataUpload";
-        var evtCSVUploaded = "csvUploaded." + widgetName + ".fenix";
+        var evtDataParsed = "dataParsed." + widgetName + ".fenix";
         var defConfig = {
             csvOptions: {
                 separator: ',',
@@ -20,6 +20,7 @@
             this.$container;
             this.$upload;
             this.txtUpload;
+            this.$csvParseWindow;
 
             this.CSVParsePreview = new CSVParsePreview();
         };
@@ -35,15 +36,32 @@
             this.txtUpload.render(this.$upload);
 
             this.CSVParsePreview.render($("#cntDataUploadPreview"));
+            this.$csvParseWindow = this.$container.find('#modalDataUploadPreview');
 
             var me = this;
             this.$upload.on('textFileUploaded.TextFileUpload.fenix', function (evt, csvData) {
                 me.CSVParsePreview.setCSV_Text(csvData);
+                me.$csvParseWindow.modal('show');
             });
+            this.$container.find('#btnUploadPreviewCanc').click(function () { me.$csvParseWindow.modal('hide'); });
+            this.$container.find('#btnUploadPreviewOk').click(function () {
+                me.$csvParseWindow.modal('hide');
+                me.$container.trigger(evtDataParsed);
+            });
+
+            /*
+            this.$container.find('#btnEditRowCanc').click(function () { me.$editWindow.modal('hide'); });
+            this.$container.find('#btnEditRowOk').click(function () { me.rowEditOk(); });
+            this.$editWindow.on('hidden.bs.modal', function (e) { me.rowEditor.reset(); });
+            <button id="btnUploadPreviewCanc" type="button" class="btn btn-default">__Cancel</button>
+                            <button id="btnUploadPreviewOk" type="button" class="btn btn-default">__Ok</button>
+            */
         }
 
-        DataUpload.prototype.getData = function ()
-        {
+        DataUpload.prototype.getData = function () {
+            if (this.validate() != null)
+                return false;
+
             var toRet = this.CSVParsePreview.getData();
             if (!toRet)
                 return false;
@@ -51,6 +69,9 @@
         }
 
         DataUpload.prototype.getColumns = function () {
+            if (this.validate() != null) 
+                return false;
+
             var header = this.CSVParsePreview.getHeaderRow();
             if (!header) {
                 return false;
@@ -58,14 +79,22 @@
             var dTypes = this.CSVParsePreview.getDataTypes();//Cannot determine the datatype, number could be a year or a value
             var toRet = [];
             for (var i = 0; i < header.length; i++) {
-                toRet.push({ id: header[i], title: { EN: header[i] }});
+                toRet.push({ id: header[i], title: { EN: header[i] } });
             }
             return toRet;
         }
 
-        DataUpload.prototype.validate = function ()
-        {
+        DataUpload.prototype.validate = function () {
             return this.CSVParsePreview.validate();
+        }
+        DataUpload.prototype.alertValidation = function () {
+            var valRes = this.CSVParsePreview.validate();
+            if (valRes == null)
+                return;
+            var toShow = "";
+            for (var i = 0 ; i < valRes.length; i++)
+                toShow += valRes[i].type + "\r\n";
+            alert(toShow);
         }
 
         return DataUpload;
