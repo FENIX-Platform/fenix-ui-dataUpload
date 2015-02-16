@@ -3,7 +3,6 @@
 ],
 function ($) {
     var ERR_NO_DATA = "noData";
-    var ERR_NO_DATA = "noData";
     var ERR_DUPLICATE_COLUMN_IDS = "duplicateIDs";
     var ERR_DATA_COLUMNS_COUNT = "wrongDataColumnsCount";
     var ERR_IS_NOT_A_NUMBER = "isNotANumber";

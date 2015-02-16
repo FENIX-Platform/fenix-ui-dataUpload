@@ -2,9 +2,10 @@
         'jquery',
         'fx-DataUpload/js/DataUpload/TextFileUpload',
         'text!fx-DataUpload/templates/DataUpload/DataUpload.htm',
-        'fx-DataUpload/js/DataUpload/converters/CSV/CSVParsePreview'
+        'fx-DataUpload/js/DataUpload/converters/CSV/CSVParsePreview',
+        'i18n!fx-DataUpload/multiLang/DataUpload/nls/ML_DataUpload',
 ],
-    function ($, TextFileUpload, DataUploadHTML, CSVParsePreview) {
+    function ($, TextFileUpload, DataUploadHTML, CSVParsePreview, mlRes) {
         var widgetName = "DataUpload";
         var evtDataParsed = "dataParsed." + widgetName + ".fenix";
         var defConfig = {
@@ -48,14 +49,6 @@
                 me.$csvParseWindow.modal('hide');
                 me.$container.trigger(evtDataParsed);
             });
-
-            /*
-            this.$container.find('#btnEditRowCanc').click(function () { me.$editWindow.modal('hide'); });
-            this.$container.find('#btnEditRowOk').click(function () { me.rowEditOk(); });
-            this.$editWindow.on('hidden.bs.modal', function (e) { me.rowEditor.reset(); });
-            <button id="btnUploadPreviewCanc" type="button" class="btn btn-default">__Cancel</button>
-                            <button id="btnUploadPreviewOk" type="button" class="btn btn-default">__Ok</button>
-            */
         }
 
         DataUpload.prototype.getData = function () {
@@ -85,7 +78,11 @@
         }
 
         DataUpload.prototype.validate = function () {
-            return this.CSVParsePreview.validate();
+            var toRet = this.CSVParsePreview.validate();
+            if (toRet)
+                for (var i = 0 ; i < toRet.length; i++)
+                    toRet.message = mlRes[toRet[i].type];
+            return toRet;
         }
         DataUpload.prototype.alertValidation = function () {
             var valRes = this.CSVParsePreview.validate();
@@ -93,7 +90,7 @@
                 return;
             var toShow = "";
             for (var i = 0 ; i < valRes.length; i++)
-                toShow += valRes[i].type + "\r\n";
+                toShow += mlRes[valRes[i].type] + "\r\n";
             alert(toShow);
         }
 
