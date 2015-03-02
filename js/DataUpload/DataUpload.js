@@ -44,8 +44,8 @@
                 me.CSVParsePreview.setCSV_Text(csvData);
                 me.$csvParseWindow.modal('show');
             });
-            this.$container.find('#btnUploadPreviewCanc').click(function () { me.$csvParseWindow.modal('hide'); });
-            this.$container.find('#btnUploadPreviewOk').click(function () {
+            this.$container.find('#btnUploadPreviewCanc').on('click', function () { me.$csvParseWindow.modal('hide'); });
+            this.$container.find('#btnUploadPreviewOk').on('click', function () {
                 me.$csvParseWindow.modal('hide');
                 me.$container.trigger(evtDataParsed);
             });
@@ -62,7 +62,7 @@
         }
 
         DataUpload.prototype.getColumns = function () {
-            if (this.validate() != null) 
+            if (this.validate() != null)
                 return false;
 
             var header = this.CSVParsePreview.getHeaderRow();
@@ -92,6 +92,14 @@
             for (var i = 0 ; i < valRes.length; i++)
                 toShow += mlRes[valRes[i].type] + "\r\n";
             alert(toShow);
+        }
+
+        DataUpload.prototype.destroy = function () {
+            this.CSVParsePreview.destroy();
+            this.txtUpload.destroy();
+            this.$upload.off('textFileUploaded.TextFileUpload.fenix');
+            this.$container.find('#btnUploadPreviewCanc').off('click');
+            this.$container.find('#btnUploadPreviewOk').off('click');
         }
 
         return DataUpload;

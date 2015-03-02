@@ -219,7 +219,7 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
 
     CSVParsePreview.prototype.addEvents = function () {
         var me = this;
-        this.$txtSeparator.keyup(function (e) {
+        this.$txtSeparator.on('keyup', function (e) {
             if (me.on1CharKeyUp(e, me.$txtSeparator)) {
                 me.config.CSVParseOptions = me.parseOptionsFromInterface();
                 me.parseCSV();
@@ -227,11 +227,20 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
                 me.updateDataPreview();
             }
         });
-        this.$container.find('#decDot').change(function () { me.parseAndUpdate(); });
-        this.$container.find('#decComma').change(function () { me.parseAndUpdate(); });
-        this.$container.find('#thoNo').change(function () { me.parseAndUpdate(); });
-        this.$container.find('#thoComma').change(function () { me.parseAndUpdate(); });
-        this.$container.find('#thoDot').change(function () { me.parseAndUpdate(); });
+        this.$container.find('#decDot').on('change',function () { me.parseAndUpdate(); });
+        this.$container.find('#decComma').on('change', function () { me.parseAndUpdate(); });
+        this.$container.find('#thoNo').on('change', function () { me.parseAndUpdate(); });
+        this.$container.find('#thoComma').on('change', function () { me.parseAndUpdate(); });
+        this.$container.find('#thoDot').on('change', function () { me.parseAndUpdate(); });
+    }
+
+    CSVParsePreview.prototype.destroy = function () {
+        this.$txtSeparator.off('keyup');
+        this.$container.find('#decDot').off('change');
+        this.$container.find('#decComma').off('change');
+        this.$container.find('#thoNo').off('change');
+        this.$container.find('#thoComma').off('change');
+        this.$container.find('#thoDot').off('change');
     }
 
     CSVParsePreview.prototype.parseAndUpdate = function () {
