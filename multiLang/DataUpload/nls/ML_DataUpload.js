@@ -1,5 +1,7 @@
 ﻿define({
     "root": {
+        "ok": "Ok",
+        "cancel": "Cancel",
         "wrongFileType": "The file type is not accepted",
         "noData": "Nothing to read",
         "duplicateIDs": "Duplicate column IDs",

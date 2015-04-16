@@ -49,6 +49,8 @@
                 me.$csvParseWindow.modal('hide');
                 me.$container.trigger(evtDataParsed);
             });
+
+            this._doML();
         }
 
         DataUpload.prototype.getData = function () {
@@ -100,6 +102,11 @@
             this.$upload.off('textFileUploaded.TextFileUpload.fenix');
             this.$container.find('#btnUploadPreviewCanc').off('click');
             this.$container.find('#btnUploadPreviewOk').off('click');
+        }
+
+        DataUpload.prototype._doML = function () {
+            this.$container.find('#btnUploadPreviewCanc').html(mlRes.cancel);
+            this.$container.find('#btnUploadPreviewOk').html(mlRes.ok);
         }
 
         return DataUpload;

@@ -1,4 +1,6 @@
 ﻿define({
+    "ok": "Ok",
+    "cancel": "Cancel",
     "wrongFileType": "The file type is not accepted FR",
     "noData": "FR Nothing to read",
     "duplicateIDs": "FR Duplicate column IDs",
