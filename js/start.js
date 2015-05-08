@@ -14,6 +14,7 @@ define([
     function validate() { return this.DUpload.validate(); }
     function alertValidation() { return this.DUpload.alertValidation(); }
     function destroy() { return this.DUpload.destroy(); }
+    function reset() { return this.DUpload.reset();}
 
     return {
         init: init,
@@ -21,6 +22,7 @@ define([
         getColumns: getColumns,
         validate: validate,
         alertValidation: alertValidation,
+        reset:reset,
         destroy: destroy
     }
 });

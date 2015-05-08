@@ -22,11 +22,15 @@ function ($, FileUploadHTML, mlRes) {
         this.initUploadInput();
     }
 
+    TextFileUpload.prototype.reset = function () {
+        this.$uploadInput.val('');
+    }
+
     TextFileUpload.prototype.initUploadInput = function () {
         this.$uploadInput = this.$container.find('#fName');
         var me = this;
 
-        this.$uploadInput.on('change',function (e) {
+        this.$uploadInput.on('change', function (e) {
             var ext = me.$uploadInput.val().split(".").pop().toLowerCase();
             if ($.inArray(ext, me.config.accept) == -1) {
                 alert(mlRes.wrongFileType);

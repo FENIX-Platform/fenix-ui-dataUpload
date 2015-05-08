@@ -44,9 +44,13 @@
                 me.CSVParsePreview.setCSV_Text(csvData);
                 me.$csvParseWindow.modal('show');
             });
-            this.$container.find('#btnUploadPreviewCanc').on('click', function () { me.$csvParseWindow.modal('hide'); });
+            this.$container.find('#btnUploadPreviewCanc').on('click', function () {
+                me.$csvParseWindow.modal('hide');
+                me.txtUpload.reset();
+            });
             this.$container.find('#btnUploadPreviewOk').on('click', function () {
                 me.$csvParseWindow.modal('hide');
+                me.txtUpload.reset();
                 me.$container.trigger(evtDataParsed);
             });
 
@@ -94,6 +98,10 @@
             for (var i = 0 ; i < valRes.length; i++)
                 toShow += mlRes[valRes[i].type] + "\r\n";
             alert(toShow);
+        }
+
+        DataUpload.prototype.reset = function () {
+            this.txtUpload.reset();
         }
 
         DataUpload.prototype.destroy = function () {
