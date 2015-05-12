@@ -5,7 +5,10 @@
 function ($, FileUploadHTML, mlRes) {
     var widgetName = 'TextFileUpload';
     var evtTextFileUploaded = 'textFileUploaded.' + widgetName + '.fenix';
-    var defConfig = { accept: ['csv'] };
+    var defConfig = {
+        accept: ['csv'],
+        maxFileBytes: 0
+    };
 
     function TextFileUpload(config) {
         this.config = {};
@@ -36,7 +39,12 @@ function ($, FileUploadHTML, mlRes) {
                 alert(mlRes.wrongFileType);
                 return false;
             }
-
+            if (me.config.maxFileBytes != 0) {
+                if (e.target.files.item(0).size > me.config.maxFileBytes) {
+                    alert(mlRes.maxFileSizeIs.replace("%max%", (me.config.maxFileBytes / 1048576)));
+                    return false;
+                }
+            }
             if (e.target.files != undefined) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
