@@ -26,8 +26,9 @@ function ($) {
         for (i = 0; i < dataTypes.length; i++)
             if (dataTypes[i] == 'num')
                 for (var r = 1; r < data.length; r++)
-                    if (!$.isNumeric(data[r][i]))
-                        toRet.push({ level: 'e', type: ERR_IS_NOT_A_NUMBER, row: r });
+                    if (data[r][i] && data[r][i].trim() != '')
+                        if (!$.isNumeric(data[r][i]))
+                            toRet.push({ level: 'e', type: ERR_IS_NOT_A_NUMBER, row: r });
         if (toRet.length == 0)
             return null;
         return toRet;
