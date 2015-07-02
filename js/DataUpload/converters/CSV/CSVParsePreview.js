@@ -2,7 +2,7 @@
 'jquery',
 'fx-DataUpload/js/DataUpload/converters/CSV/CSVToStringArray',
 'fx-DataUpload/js/DataUpload/converters/CSV/CSVParseValidator',
-'text!fx-DataUpload/templates/DataUpload/DataParsePreview.html',
+'text!fx-DataUpload/templates/DataUpload/DataParsePreview.html'
 ],
 function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
     var keyCodesIgnore = [16];
@@ -43,8 +43,15 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
     CSVParsePreview.prototype.setCSV_Text = function (txt) {
         this.txt = txt;
         this.parseCSV();
+
+        var valRes = this.validate();
+        if (valRes && valRes.length > 0) {
+            return valRes;
+        }
+
         this.createTable();
         this.updateDataPreview();
+        return valRes;
     }
 
     CSVParsePreview.prototype.updateCSVOptions = function (newParseOptions) {
@@ -292,7 +299,9 @@ function ($, CSVToStringArray, CSVParseValidator, DataParsePreviewHTML) {
     //Validation
     CSVParsePreview.prototype.validate = function () {
         var val = new CSVParseValidator();
-        return val.validate(this.getHeaderRow(), this.getData(), this.arrDataTypes);
+        var valRes = val.validate(this.getHeaderRow(), this.getData(), this.arrDataTypes);
+
+        return valRes;
     }
     return CSVParsePreview;
 });

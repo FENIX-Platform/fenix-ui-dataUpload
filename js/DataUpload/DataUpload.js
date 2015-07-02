@@ -4,6 +4,7 @@
         'text!fx-DataUpload/templates/DataUpload/DataUpload.htm',
         'fx-DataUpload/js/DataUpload/converters/CSV/CSVParsePreview',
         'i18n!fx-DataUpload/multiLang/DataUpload/nls/ML_DataUpload',
+        'pnotify'
 ],
     function ($, TextFileUpload, DataUploadHTML, CSVParsePreview, mlRes) {
         var widgetName = "DataUpload";
@@ -41,8 +42,27 @@
 
             var me = this;
             this.$upload.on('textFileUploaded.TextFileUpload.fenix', function (evt, csvData) {
-                me.CSVParsePreview.setCSV_Text(csvData);
-                me.$csvParseWindow.modal('show');
+                var valRes = me.CSVParsePreview.setCSV_Text(csvData);
+                //Something is not validated
+                if (valRes && valRes.length > 0) {
+                    for (var i = 0; i < valRes.length; i++)
+                    {
+                        var msg = mlRes[valRes[i].type];
+                        //if (valRes[i].type=='wrongColumnID')
+                        new PNotify({
+                            title: '',
+                            //text: errMsg,
+                            text:valRes[i].message,
+                            type: 'error'
+                        });
+                    }
+                    
+                    //Error parsing reset
+                    me.txtUpload.reset();
+                }
+                else {
+                    me.$csvParseWindow.modal('show');
+                }
             });
             this.$container.find('#btnUploadPreviewCanc').on('click', function () {
                 me.$csvParseWindow.modal('hide');
@@ -89,15 +109,6 @@
                 for (var i = 0 ; i < toRet.length; i++)
                     toRet.message = mlRes[toRet[i].type];
             return toRet;
-        }
-        DataUpload.prototype.alertValidation = function () {
-            var valRes = this.CSVParsePreview.validate();
-            if (valRes == null)
-                return;
-            var toShow = "";
-            for (var i = 0 ; i < valRes.length; i++)
-                toShow += mlRes[valRes[i].type] + "\r\n";
-            alert(toShow);
         }
 
         DataUpload.prototype.reset = function () {
